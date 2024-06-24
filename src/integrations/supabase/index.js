@@ -19,53 +19,46 @@ const fromSupabase = async (query) => {
 
 /* supabase integration types
 
-// EXAMPLE TYPES SECTION
-// DO NOT USE TYPESCRIPT
+### TOW
 
-### foos
+| name       | type        | format | required |
+|------------|-------------|--------|----------|
+| id         | int8        | number | true     |
+| created_at | timestamptz | string | true     |
 
-| name    | type | format | required |
-|---------|------|--------|----------|
-| id      | int8 | number | true     |
-| title   | text | string | true     |
-| date    | date | string | true     |
-
-### bars
-
-| name    | type | format | required |
-|---------|------|--------|----------|
-| id      | int8 | number | true     |
-| foo_id  | int8 | number | true     |  // foreign key to foos
-	
 */
 
-// Example hook for models
+export const useTOW = () => useQuery({
+    queryKey: ['TOW'],
+    queryFn: () => fromSupabase(supabase.from('TOW').select('*')),
+});
 
-export const useFoo = ()=> useQuery({
-    queryKey: ['foos'],
-    queryFn: fromSupabase(supabase.from('foos')),
-})
-export const useAddFoo = () => {
+export const useAddTOW = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newFoo)=> fromSupabase(supabase.from('foos').insert([{ title: newFoo.title }])),
-        onSuccess: ()=> {
-            queryClient.invalidateQueries('foos');
+        mutationFn: (newTOW) => fromSupabase(supabase.from('TOW').insert([newTOW])),
+        onSuccess: () => {
+            queryClient.invalidateQueries('TOW');
         },
     });
 };
 
-export const useBar = ()=> useQuery({
-    queryKey: ['bars'],
-    queryFn: fromSupabase(supabase.from('bars')),
-})
-export const useAddBar = () => {
+export const useUpdateTOW = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newBar)=> fromSupabase(supabase.from('bars').insert([{ foo_id: newBar.foo_id }])),
-        onSuccess: ()=> {
-            queryClient.invalidateQueries('bars');
+        mutationFn: (updatedTOW) => fromSupabase(supabase.from('TOW').update(updatedTOW).eq('id', updatedTOW.id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('TOW');
         },
     });
 };
 
+export const useDeleteTOW = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id) => fromSupabase(supabase.from('TOW').delete().eq('id', id)),
+        onSuccess: () => {
+            queryClient.invalidateQueries('TOW');
+        },
+    });
+};
